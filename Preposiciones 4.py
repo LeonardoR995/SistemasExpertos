@@ -203,3 +203,4 @@ boton_cerrar = tk.Button(ventana, text="Cerrar", command=cerrar_y_mostrar)
 boton_cerrar.pack(pady=5)
 
 ventana.mainloop()
+
