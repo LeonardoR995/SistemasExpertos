@@ -8,59 +8,59 @@ def identificar_operadores(proposicion):
     proposiciones_simples = []
     tokens = proposicion.split()
     temp_proposicion = []
-    negacion = False  # Variable para marcar si se debe negar la proposición
+    negacion = False
 
     for token in tokens:
         if token == "no":
-            negacion = True  # Marcar que la proposición debe ser negada
+            negacion = True
         elif token in ["y", "and", "o", "or"]:
+            if temp_proposicion:
+                proposicion_texto = " ".join(temp_proposicion).strip()
+                if negacion:
+                    proposiciones_simples.append("¬" + proposicion_texto)
+                    negacion = False
+                else:
+                    proposiciones_simples.append(proposicion_texto)
+                temp_proposicion = []
             operadores.append("and" if token in ["y", "and"] else "or")
-            proposicion_texto = " ".join(temp_proposicion).strip()
-            if negacion:
-                proposiciones_simples.append("¬" + proposicion_texto)
-                negacion = False  # Resetear negación para la próxima proposición
-            else:
-                proposiciones_simples.append(proposicion_texto)
-            temp_proposicion = []
         else:
             temp_proposicion.append(token)
 
-    # Agregar la última proposición, con negación si aplica
-    proposicion_texto = " ".join(temp_proposicion).strip()
-    if negacion:
-        proposiciones_simples.append("¬" + proposicion_texto)
-    else:
-        proposiciones_simples.append(proposicion_texto)
+    if temp_proposicion:
+        proposicion_texto = " ".join(temp_proposicion).strip()
+        if negacion:
+            proposiciones_simples.append("¬" + proposicion_texto)
+        else:
+            proposiciones_simples.append(proposicion_texto)
 
     return operadores, proposiciones_simples
 
 def procesar_proposiciones():
-    global operadores_list, proposiciones_simples_list, formulas, proposiciones_map  # Definir como variables globales
+    global operadores_list, proposiciones_simples_list, formulas, proposiciones_map
     operadores_list = []
     proposiciones_simples_list = []
     formulas = []
     proposiciones_map = {}
     proposiciones = entrada_proposiciones.get("1.0", tk.END).strip().lower().split("\n")
 
-    letra_current = 0  # Inicializar el contador de letras aquí
+    letra_current = 0
 
     for proposicion in proposiciones:
         if proposicion:
             operadores, proposiciones_simples = identificar_operadores(proposicion)
             for simple in proposiciones_simples:
-                # Normalizamos la proposición simple eliminando la negación para el mapeo
                 key = simple.lstrip('¬').strip()
                 if key not in proposiciones_map:
                     proposiciones_map[key] = chr(65 + letra_current)
                     letra_current += 1
-            
-            # Generar la fórmula utilizando las letras mapeadas
-            formula = 'A' if not proposiciones_simples[0].startswith('¬') else '¬A'
-            for i in range(1, len(proposiciones_simples)):
-                if operadores[i-1] == 'and':
-                    formula += ' ∧ '
-                else:
-                    formula += ' ∨ '
+
+            formula = ''
+            for i in range(len(proposiciones_simples)):
+                if i > 0:
+                    if operadores[i - 1] == 'and':
+                        formula += ' ∧ '
+                    else:
+                        formula += ' ∨ '
                 prop_key = proposiciones_simples[i].lstrip('¬').strip()
                 if not proposiciones_simples[i].startswith('¬'):
                     formula += proposiciones_map[prop_key]
@@ -82,12 +82,12 @@ def procesar_proposiciones():
                 text_result += f"{proposiciones_map[prop_key]}: {prop.replace('¬', '').strip()}\n"
             text_result += f"Fórmula: {form}\n\n"
         etiqueta_resultado.config(text=text_result)
-        boton_cerrar.pack()  # Mostrar el botón de cerrar
+        boton_cerrar.pack()
     else:
         etiqueta_resultado.config(text="Proposición no válida")
 
 def cerrar_y_mostrar():
-    ventana.destroy()  # Cerrar la ventana principal
+    ventana.destroy()
     for operadores, proposiciones_simples, formula in zip(operadores_list, proposiciones_simples_list, formulas):
         mostrar_tabla_verdad(operadores, proposiciones_simples)
         mostrar_arbol(operadores, proposiciones_simples, formula)
@@ -101,14 +101,12 @@ def evaluar_resultado(valores, operadores):
             resultado = resultado or valores[i]
     return int(resultado)
 
-# Función para mostrar la tabla de verdad en una ventana
 def mostrar_tabla_verdad(operadores, proposiciones_simples):
     ventana_tabla = tk.Tk()
     ventana_tabla.title(f"Tabla de verdad")
     texto = scrolledtext.ScrolledText(ventana_tabla, width=70, height=15)
     texto.pack()
 
-    texto.insert(tk.END, f"Tabla de verdad:\n\n")
     headers = ' | '.join([proposiciones_map[prop.lstrip('¬').strip()] for prop in proposiciones_simples]) + " | Resultado\n"
     texto.insert(tk.END, headers)
     texto.insert(tk.END, "--|" * (len(proposiciones_simples) + 1) + "----------\n")
@@ -142,8 +140,8 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
     canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
 
-    x0, y0 = 1500, 700  # Coordenada inicial centrada (ajustada hacia abajo)
-    dx, dy = 38, 45  # Separación entre nodos
+    x0, y0 = 1500, 700
+    dx, dy = 38, 45
     canvas.create_text(x0, y0 - 80, text=f"Fórmula: {formula}", font=("Arial", 14, "bold"), fill="darkred")
 
     for i, prop in enumerate(proposiciones_simples):
@@ -181,13 +179,27 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
 
 ventana = tk.Tk()
 ventana.title("Analizador de Proposiciones")
-tk.Label(ventana, text="Ingresa las proposiciones (una por línea):").pack()
-entrada_proposiciones = tk.Text(ventana, width=70, height=10)
-entrada_proposiciones.pack()
+ventana.configure(bg="#eaeaea")
+
+# Título
+titulo = tk.Label(ventana, text="Analizador de Proposiciones", font=("Arial", 16, "bold"), bg="#eaeaea")
+titulo.pack(pady=10)
+
+# Entrada de proposiciones
+tk.Label(ventana, text="Ingresa las proposiciones (una por línea):", bg="#eaeaea").pack()
+entrada_proposiciones = tk.Text(ventana, height=10, width=50)
+entrada_proposiciones.pack(pady=5)
+
+# Botón para procesar
 boton_procesar = tk.Button(ventana, text="Procesar", command=procesar_proposiciones)
-boton_procesar.pack()
-etiqueta_resultado = tk.Label(ventana, text="")
-etiqueta_resultado.pack()
-boton_cerrar = tk.Button(ventana, text="Cerrar y mostrar resultados", command=cerrar_y_mostrar)
-boton_cerrar.pack_forget()
+boton_procesar.pack(pady=5)
+
+# Etiqueta para mostrar resultados
+etiqueta_resultado = tk.Label(ventana, text="", bg="#eaeaea", justify=tk.LEFT)
+etiqueta_resultado.pack(pady=5)
+
+# Botón para cerrar
+boton_cerrar = tk.Button(ventana, text="Cerrar", command=cerrar_y_mostrar)
+boton_cerrar.pack(pady=5)
+
 ventana.mainloop()
