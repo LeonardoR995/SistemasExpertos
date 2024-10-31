@@ -1,97 +1,96 @@
 import tkinter as tk
-from tkinter import scrolledtext, filedialog, messagebox
+from tkinter import scrolledtext
 from itertools import product
-
-# Variables globales
-proposiciones_simples = set()  # Usar un conjunto para evitar duplicados
-formulas = []  # Lista para almacenar fórmulas generadas
 
 def identificar_operadores(proposicion):
     proposicion = proposicion.lower()
     operadores = []
+    proposiciones_simples = []
     tokens = proposicion.split()
     temp_proposicion = []
-    negacion = False
+    negacion = False  # Variable para marcar si se debe negar la proposición
 
     for token in tokens:
         if token == "no":
-            negacion = True
+            negacion = True  # Marcar que la proposición debe ser negada
         elif token in ["y", "and", "o", "or"]:
             operadores.append("and" if token in ["y", "and"] else "or")
             proposicion_texto = " ".join(temp_proposicion).strip()
             if negacion:
-                proposiciones_simples.add("¬" + proposicion_texto)
-                negacion = False
+                proposiciones_simples.append("¬" + proposicion_texto)
+                negacion = False  # Resetear negación para la próxima proposición
             else:
-                proposiciones_simples.add(proposicion_texto)
+                proposiciones_simples.append(proposicion_texto)
             temp_proposicion = []
         else:
             temp_proposicion.append(token)
 
+    # Agregar la última proposición, con negación si aplica
     proposicion_texto = " ".join(temp_proposicion).strip()
     if negacion:
-        proposiciones_simples.add("¬" + proposicion_texto)
+        proposiciones_simples.append("¬" + proposicion_texto)
     else:
-        proposiciones_simples.add(proposicion_texto)
+        proposiciones_simples.append(proposicion_texto)
 
-    return operadores, list(proposiciones_simples)
+    return operadores, proposiciones_simples
 
-def procesar_proposicion():
-    global operadores, formula
-    proposicion = entrada_proposicion.get().lower()
-    operadores, proposiciones_simples = identificar_operadores(proposicion)
+def procesar_proposiciones():
+    global operadores_list, proposiciones_simples_list, formulas, proposiciones_map  # Definir como variables globales
+    operadores_list = []
+    proposiciones_simples_list = []
+    formulas = []
+    proposiciones_map = {}
+    proposiciones = entrada_proposiciones.get("1.0", tk.END).strip().lower().split("\n")
 
-    if operadores and proposiciones_simples:
-        formula = 'A' if not proposiciones_simples[0].startswith('¬') else '¬A'
-        for i in range(1, len(proposiciones_simples)):
-            if operadores[i - 1] == 'and':
-                formula += ' ∧ '
-            else:
-                formula += ' ∨ '
-            formula += chr(65 + i) if not proposiciones_simples[i].startswith('¬') else '¬' + chr(65 + i)
+    letra_current = 0  # Inicializar el contador de letras aquí
 
-        text_result = f"Operadores identificados: {', '.join(operadores).upper()}\nProposiciones simples:\n"
-        for i, prop in enumerate(proposiciones_simples):
-            text_result += f"{chr(65 + i)}: {prop.replace('¬', '').strip()}\n"
-        text_result += f"Fórmula: {formula}"
+    for proposicion in proposiciones:
+        if proposicion:
+            operadores, proposiciones_simples = identificar_operadores(proposicion)
+            for simple in proposiciones_simples:
+                # Normalizamos la proposición simple eliminando la negación para el mapeo
+                key = simple.lstrip('¬').strip()
+                if key not in proposiciones_map:
+                    proposiciones_map[key] = chr(65 + letra_current)
+                    letra_current += 1
+            
+            # Generar la fórmula utilizando las letras mapeadas
+            formula = 'A' if not proposiciones_simples[0].startswith('¬') else '¬A'
+            for i in range(1, len(proposiciones_simples)):
+                if operadores[i-1] == 'and':
+                    formula += ' ∧ '
+                else:
+                    formula += ' ∨ '
+                prop_key = proposiciones_simples[i].lstrip('¬').strip()
+                if not proposiciones_simples[i].startswith('¬'):
+                    formula += proposiciones_map[prop_key]
+                else:
+                    formula += '¬' + proposiciones_map[prop_key]
+
+            operadores_list.append(operadores)
+            proposiciones_simples_list.append(proposiciones_simples)
+            formulas.append(formula)
+
+    if operadores_list and proposiciones_simples_list:
+        text_result = ""
+        for idx, (ops, props, form) in enumerate(zip(operadores_list, proposiciones_simples_list, formulas)):
+            text_result += f"Proposición {idx + 1}:\n"
+            text_result += f"Operadores identificados: {', '.join(ops).upper()}\n"
+            text_result += f"Proposiciones simples:\n"
+            for i, prop in enumerate(props):
+                prop_key = prop.lstrip('¬').strip()
+                text_result += f"{proposiciones_map[prop_key]}: {prop.replace('¬', '').strip()}\n"
+            text_result += f"Fórmula: {form}\n\n"
         etiqueta_resultado.config(text=text_result)
-
-        # Guardar la fórmula en la lista
-        formulas.append((proposicion, formula))
-        boton_cerrar.pack()
+        boton_cerrar.pack()  # Mostrar el botón de cerrar
     else:
         etiqueta_resultado.config(text="Proposición no válida")
 
-def guardar_regla():
-    if not formulas:
-        messagebox.showwarning("Advertencia", "No hay reglas para guardar.")
-        return
-    filepath = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
-    if filepath:
-        with open(filepath, 'w', encoding='utf-8') as f:  # Especificar la codificación
-            for proposicion, formula in formulas:
-                f.write(f"{proposicion} => {formula}\n")
-        messagebox.showinfo("Éxito", "Reglas guardadas exitosamente.")
-
-
-def cargar_reglas():
-    filepath = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
-    if filepath:
-        with open(filepath, 'r') as f:
-            reglas = f.readlines()
-        ventana_carga = tk.Tk()
-        ventana_carga.title("Reglas Cargadas")
-        texto = scrolledtext.ScrolledText(ventana_carga, width=70, height=15)
-        texto.pack(padx=10, pady=10)
-        for regla in reglas:
-            texto.insert(tk.END, regla.strip() + "\n")
-        ventana_carga.mainloop()
-
 def cerrar_y_mostrar():
-    ventana.destroy()
-    # Mostrar tabla y árbol, asegurando que los datos sean correctos
-    mostrar_tabla_verdad(operadores, list(proposiciones_simples))
-    mostrar_arbol(operadores, list(proposiciones_simples), formula)
+    ventana.destroy()  # Cerrar la ventana principal
+    for operadores, proposiciones_simples, formula in zip(operadores_list, proposiciones_simples_list, formulas):
+        mostrar_tabla_verdad(operadores, proposiciones_simples)
+        mostrar_arbol(operadores, proposiciones_simples, formula)
 
 def evaluar_resultado(valores, operadores):
     resultado = valores[0]
@@ -102,21 +101,22 @@ def evaluar_resultado(valores, operadores):
             resultado = resultado or valores[i]
     return int(resultado)
 
+# Función para mostrar la tabla de verdad en una ventana
 def mostrar_tabla_verdad(operadores, proposiciones_simples):
     ventana_tabla = tk.Tk()
-    ventana_tabla.title("Tabla de verdad")
+    ventana_tabla.title(f"Tabla de verdad")
     texto = scrolledtext.ScrolledText(ventana_tabla, width=70, height=15)
-    texto.pack(padx=10, pady=10)
+    texto.pack()
 
-    texto.insert(tk.END, "Tabla de verdad:\n\n")
-    headers = ' | '.join([chr(65 + i) for i in range(len(proposiciones_simples))]) + " | Resultado\n"
+    texto.insert(tk.END, f"Tabla de verdad:\n\n")
+    headers = ' | '.join([proposiciones_map[prop.lstrip('¬').strip()] for prop in proposiciones_simples]) + " | Resultado\n"
     texto.insert(tk.END, headers)
     texto.insert(tk.END, "--|" * (len(proposiciones_simples) + 1) + "----------\n")
 
     for valores in product([1, 0], repeat=len(proposiciones_simples)):
         valores_negados = [
-            int(not val) if prop.startswith('¬') else val
-            for prop, val in zip(proposiciones_simples, valores)
+            int(not val) if proposiciones_simples[i].startswith('¬') else val
+            for i, val in enumerate(valores)
         ]
         resultado = evaluar_resultado(valores_negados, operadores)
         valores_str = ' | '.join(map(str, valores_negados)) + f" | {resultado}\n"
@@ -142,14 +142,14 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
     canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
 
-    x0, y0 = 1500, 700
-    dx, dy = 38, 45
+    x0, y0 = 1500, 700  # Coordenada inicial centrada (ajustada hacia abajo)
+    dx, dy = 38, 45  # Separación entre nodos
     canvas.create_text(x0, y0 - 80, text=f"Fórmula: {formula}", font=("Arial", 14, "bold"), fill="darkred")
 
     for i, prop in enumerate(proposiciones_simples):
         x_offset = ((i % 3) - 1) * 200
         y_offset = (i // 3) * 20
-        canvas.create_text(x0 + x_offset, y0 - 40 + y_offset, text=f"{chr(65 + i)}: {prop.replace('¬', '').strip()}", font=("Arial", 12, "bold"))
+        canvas.create_text(x0 + x_offset, y0 - 40 + y_offset, text=f"{proposiciones_map[prop.lstrip('¬').strip()]}: {prop.replace('¬', '').strip()}", font=("Arial", 12, "bold"))
 
     def asignar_valores_y_evaluar(caminos):
         valores = [int(val[-1]) for val in caminos]
@@ -176,26 +176,18 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
         dibujar_nodos(x_der, y_der, depth + 1, camino_actual + [nodo_der])
 
     dibujar_nodos(x0, y0, 0, [])
+
     ventana_arbol.mainloop()
 
-# Configuración de la interfaz
 ventana = tk.Tk()
 ventana.title("Analizador de Proposiciones")
-ventana.geometry("500x350")
-ventana.config(bg="#f0f0f0")
-
-tk.Label(ventana, text="Ingresa la proposición:", bg="#f0f0f0").pack(pady=10)
-entrada_proposicion = tk.Entry(ventana, width=70)
-entrada_proposicion.pack(pady=5)
-boton_procesar = tk.Button(ventana, text="Procesar", command=procesar_proposicion, bg="#4CAF50", fg="white")
-boton_procesar.pack(pady=10)
-boton_guardar = tk.Button(ventana, text="Guardar Regla", command=guardar_regla, bg="#2196F3", fg="white")
-boton_guardar.pack(pady=5)
-boton_cargar = tk.Button(ventana, text="Cargar Reglas", command=cargar_reglas, bg="#FF9800", fg="white")
-boton_cargar.pack(pady=5)
-etiqueta_resultado = tk.Label(ventana, text="", bg="#f0f0f0")
-etiqueta_resultado.pack(pady=10)
-boton_cerrar = tk.Button(ventana, text="Cerrar y mostrar resultados", command=cerrar_y_mostrar, bg="#f44336", fg="white")
+tk.Label(ventana, text="Ingresa las proposiciones (una por línea):").pack()
+entrada_proposiciones = tk.Text(ventana, width=70, height=10)
+entrada_proposiciones.pack()
+boton_procesar = tk.Button(ventana, text="Procesar", command=procesar_proposiciones)
+boton_procesar.pack()
+etiqueta_resultado = tk.Label(ventana, text="")
+etiqueta_resultado.pack()
+boton_cerrar = tk.Button(ventana, text="Cerrar y mostrar resultados", command=cerrar_y_mostrar)
 boton_cerrar.pack_forget()
-
 ventana.mainloop()
