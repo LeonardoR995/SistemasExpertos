@@ -6,42 +6,54 @@ from itertools import product
 formulas = []
 proposiciones_map = {}
 
-# Función para guardar proposiciones en un archivo
-def guardar_proposiciones():
-    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
-    if archivo:
-        with open(archivo, "w") as file:
-            file.write(entrada_proposiciones.get("1.0", tk.END))
-        messagebox.showinfo("Guardado", "Las proposiciones se guardaron correctamente.")
-
-# Función para cargar proposiciones desde un archivo
-def cargar_proposiciones():
-    archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
-    if archivo:
-        with open(archivo, "r") as file:
-            contenido = file.read()
-        entrada_proposiciones.delete("1.0", tk.END)
-        entrada_proposiciones.insert(tk.END, contenido)
-        messagebox.showinfo("Cargado", "Las proposiciones se cargaron correctamente.")
-
 # Función para guardar fórmulas en un archivo de texto
 def guardar_formulas():
+    if not formulas:
+        messagebox.showwarning("Advertencia", "No hay fórmulas para guardar.")
+        return
     archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
     if archivo:
-        with open(archivo, "w") as file:
-            for i, formula in enumerate(formulas):
-                file.write(f"Proposición {i + 1}: {formula}\n")
-        messagebox.showinfo("Guardado", "Las fórmulas se guardaron correctamente.")
+        try:
+            with open(archivo, "w", encoding='utf-8') as file:  # Usa codificación UTF-8
+                for i, formula in enumerate(formulas):
+                    # Reemplazar caracteres problemáticos con su equivalente textual
+                    formula = formula.replace('∧', 'AND')  # Conjunción
+                    formula = formula.replace('∨', 'OR')   # Disyunción
+                    formula = formula.replace('¬', 'NOT')  # Negación
+                    file.write(f"Proposición {i + 1}: {formula}\n")
+            messagebox.showinfo("Guardado", "Las fórmulas se guardaron correctamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar el archivo: {e}")
 
-# Función para cargar fórmulas desde un archivo de texto y mostrarlas
+
+# Función para cargar fórmulas desde un archivo de texto y mostrarlas en una nueva ventana
 def cargar_formulas():
     archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
     if archivo:
-        with open(archivo, "r") as file:
-            contenido = file.read()
-        entrada_proposiciones.delete("1.0", tk.END)
-        entrada_proposiciones.insert(tk.END, contenido)
-        messagebox.showinfo("Cargado", "Las fórmulas se cargaron correctamente.")
+        try:
+            with open(archivo, "r", encoding='utf-8') as file:
+                contenido = file.read()
+            mostrar_contenido_archivo(contenido)  # Mostrar en nueva ventana
+            messagebox.showinfo("Cargado", "Las fórmulas se cargaron correctamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar el archivo: {e}")
+
+# Función para mostrar el contenido del archivo en una nueva ventana
+def mostrar_contenido_archivo(contenido):
+    ventana_contenido = tk.Toplevel()  # Crear nueva ventana
+    ventana_contenido.title("Contenido del Archivo")
+    ventana_contenido.configure(bg="#f7f7f7")
+
+    # Crear un área de texto para mostrar el contenido
+    texto_contenido = scrolledtext.ScrolledText(ventana_contenido, width=70, height=20, font=("Helvetica", 10))
+    texto_contenido.pack(padx=10, pady=10)
+    texto_contenido.insert(tk.END, contenido)
+    texto_contenido.config(state=tk.DISABLED)  # Hacer que el área de texto sea solo lectura
+
+    # Botón para cerrar la ventana
+    boton_cerrar = tk.Button(ventana_contenido, text="Cerrar", command=ventana_contenido.destroy)
+    boton_cerrar.pack(pady=5)
+
 
 # Función para identificar operadores y proposiciones
 def identificar_operadores(proposicion):
@@ -252,14 +264,16 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
     def dibujar_nodos(prev_x, prev_y, depth, camino_actual):
         if depth == len(proposiciones_simples):  # Si es nodo hoja, muestra el resultado
             resultado = asignar_valores_y_evaluar(camino_actual)  # Evalúa el resultado de la rama
-            canvas.create_text(prev_x, prev_y + 20, text=f"R={resultado}", font=("Arial", 10, "bold"), fill="blue")
+            # Mostrar el resultado (0 o 1) en la hoja
+            hoja_texto = f"R={resultado}"
+            canvas.create_text(prev_x, prev_y + 20, text=hoja_texto, font=("Arial", 10, "bold"), fill="blue")
             return
         
         # Nodo izquierdo para valor 0
         x_izq = prev_x - (dx / 2) * (2 ** (len(proposiciones_simples) - depth - 1))
         y_izq = prev_y + dy
         nodo_izq = f"{chr(65 + depth)}=0"
-        canvas.create_text(x_izq, y_izq, text=f"{chr(65 + depth)}", font=("Arial", 10))
+        canvas.create_text(x_izq, y_izq, text=nodo_izq, font=("Arial", 10))
         canvas.create_line(prev_x, prev_y, x_izq, y_izq)
         dibujar_nodos(x_izq, y_izq, depth + 1, camino_actual + [nodo_izq])
         
@@ -267,9 +281,10 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
         x_der = prev_x + (dx / 2) * (2 ** (len(proposiciones_simples) - depth - 1))
         y_der = prev_y + dy
         nodo_der = f"{chr(65 + depth)}=1"
-        canvas.create_text(x_der, y_der, text=f"{chr(65 + depth)}", font=("Arial", 10))
+        canvas.create_text(x_der, y_der, text=nodo_der, font=("Arial", 10))
         canvas.create_line(prev_x, prev_y, x_der, y_der)
         dibujar_nodos(x_der, y_der, depth + 1, camino_actual + [nodo_der])
+
 
     # Iniciar el dibujo del árbol desde la raíz
     dibujar_nodos(x0, y0, 0, [])
@@ -298,14 +313,6 @@ entrada_proposiciones.configure(bg="#ffffff", highlightbackground="#dddddd")
 boton_procesar = tk.Button(ventana_principal, text="Procesar Proposiciones", font=("Helvetica", 10), bg="#007acc", fg="white", command=procesar_proposiciones)
 boton_procesar.pack(pady=10)
 
-# Botón para guardar proposiciones
-boton_guardar = tk.Button(ventana_principal, text="Guardar Proposiciones", font=("Helvetica", 10), bg="#28a745", fg="white", command=guardar_proposiciones)
-boton_guardar.pack(pady=5)
-
-# Botón para cargar proposiciones
-boton_cargar = tk.Button(ventana_principal, text="Cargar Proposiciones", font=("Helvetica", 10), bg="#17a2b8", fg="white", command=cargar_proposiciones)
-boton_cargar.pack(pady=5)
-
 # Botón para guardar fórmulas
 boton_guardar_formulas = tk.Button(ventana_principal, text="Guardar Fórmulas", font=("Helvetica", 10), bg="#28a745", fg="white", command=guardar_formulas)
 boton_guardar_formulas.pack(pady=5)
@@ -319,3 +326,4 @@ etiqueta_resultado = tk.Label(ventana_principal, text="", font=("Helvetica", 10)
 etiqueta_resultado.pack(pady=5)
 
 ventana_principal.mainloop()
+
