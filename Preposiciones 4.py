@@ -28,6 +28,23 @@ def guardar_formulas():
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el archivo: {e}")
 
+def verificar_contradicciones():
+    proposiciones_normales = set()
+    proposiciones_negadas = set()
+
+    for formula in formulas:
+        for proposicion in formula.split():
+            if proposicion.startswith('¬'):
+                proposiciones_negadas.add(proposicion)
+            else:
+                proposiciones_normales.add(proposicion)
+
+    # Detectamos contradicciones
+    for prop in proposiciones_normales:
+        if '¬' + prop in proposiciones_negadas:
+            return True  # Se encontró una contradicción
+
+    return False
 
 
 # Función para cargar fórmulas desde un archivo de texto y mostrarlas en una nueva ventana
@@ -109,6 +126,8 @@ def identificar_operadores(proposicion):
     return operadores, proposiciones_simples
 
 # Función para procesar las proposiciones
+# Función para procesar las proposiciones
+# Función para procesar las proposiciones
 def procesar_proposiciones():
     global operadores_list, proposiciones_simples_list, formulas, proposiciones_map
     operadores_list = []
@@ -117,6 +136,9 @@ def procesar_proposiciones():
     proposiciones_map = {}
     letra_current = 1
     proposiciones = entrada_proposiciones.get("1.0", tk.END).strip().lower().split("\n")
+    
+    # Esta lista mantendrá las proposiciones sin duplicados
+    proposiciones_seen = set()
 
     for proposicion in proposiciones:
         if proposicion:
@@ -124,12 +146,19 @@ def procesar_proposiciones():
             proposiciones_simplificadas = []
 
             for simple in proposiciones_simples:
-                key = simple.lstrip('¬').strip()
-                if key not in proposiciones_map:
-                    proposiciones_map[key] = f"A{letra_current}"
-                    letra_current += 1
+                key = simple.lstrip('¬').strip()  # Extraemos la proposición sin la negación
+
+                # Verificamos si la proposición ya ha sido vista
+                if key not in proposiciones_seen:
+                    proposiciones_seen.add(key)
+                    if key not in proposiciones_map:
+                        proposiciones_map[key] = f"A{letra_current}"
+                        letra_current += 1
+
+                # Añadimos la proposición simplificada a la lista
                 proposiciones_simplificadas.append(simple)
 
+            # Reconstruir la fórmula con las proposiciones ya asignadas
             formula = ''
             for i in range(len(proposiciones_simplificadas)):
                 if i > 0:
@@ -137,6 +166,7 @@ def procesar_proposiciones():
                         formula += ' ∧ '
                     else:
                         formula += ' ∨ '
+                
                 prop_key = proposiciones_simplificadas[i].lstrip('¬').strip()
                 if not proposiciones_simplificadas[i].startswith('¬'):
                     formula += proposiciones_map[prop_key]
@@ -149,6 +179,8 @@ def procesar_proposiciones():
 
     if operadores_list and proposiciones_simples_list:
         mostrar_detalles_proposicion()
+
+
 
 # Función para mostrar detalles de la proposición
 def mostrar_detalles_proposicion():
@@ -218,14 +250,22 @@ def mostrar_tabla_verdad(operadores, proposiciones_simples, formula, checkboxes)
     texto = scrolledtext.ScrolledText(ventana_tabla, width=70, height=15)
     texto.pack()
 
-    headers = ' | '.join([proposiciones_map[prop.lstrip('¬').strip()] for prop in proposiciones_simples]) + " | Resultado\n"
-    texto.insert(tk.END, headers)
-    texto.insert(tk.END, "--|" * (len(proposiciones_simples) + 1) + "----------\n")
+    # Obtener proposiciones únicas
+    proposiciones_unicas = []
+    for prop in proposiciones_simples:
+        key = prop.lstrip('¬').strip()
+        if proposiciones_map[key] not in proposiciones_unicas:
+            proposiciones_unicas.append(proposiciones_map[key])
 
+    # Usamos las proposiciones únicas para los encabezados
+    headers = ' | '.join(proposiciones_unicas) + " | Resultado\n"
+    texto.insert(tk.END, headers)
+    texto.insert(tk.END, "--|" * (len(proposiciones_unicas) + 1) + "----------\n")
+    
     valores_seleccionados = [var.get() for _, var in checkboxes]
     resultado_seleccionado = None
 
-    for valores in product([0, 1], repeat=len(proposiciones_simples)):
+    for valores in product([0, 1], repeat=len(proposiciones_unicas)):
         valores_negados = [
             int(not val) if proposiciones_simples[i].startswith('¬') else val
             for i, val in enumerate(valores)
@@ -248,6 +288,7 @@ def mostrar_tabla_verdad(operadores, proposiciones_simples, formula, checkboxes)
     boton_cerrar.pack()
 
     return ventana_tabla
+
 
 def mostrar_arbol(operadores, proposiciones_simples, formula):
     ventana_arbol = tk.Tk()
@@ -278,13 +319,22 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
     variables_contenido = ', '.join([f"{chr(65 + i)}={valor}" for i, valor in enumerate(proposiciones_simples)])
     canvas.create_text(x0, y0 - 50, text=f"Variables: {variables_contenido}", font=("Arial", 12, "bold"), fill="blue")
 
+    # Evitar duplicados de proposiciones (agregamos las proposiciones únicas)
+    proposiciones_unicas = []
+    for prop in proposiciones_simples:
+        key = prop.lstrip('¬').strip()
+        if proposiciones_map[key] not in proposiciones_unicas:
+            proposiciones_unicas.append(proposiciones_map[key])
+
+    # Función que asigna valores a los nodos del árbol y evalúa la fórmula
     def asignar_valores_y_evaluar(caminos):
         # Convierte el camino en valores de verdad y evalúa
         valores = [int(val[-1]) for val in caminos]
         return evaluar_resultado(valores, operadores)
 
+    # Dibujar los nodos del árbol evitando duplicados
     def dibujar_nodos(prev_x, prev_y, depth, camino_actual):
-        if depth == len(proposiciones_simples):  # Si es nodo hoja, muestra el resultado
+        if depth == len(proposiciones_unicas):  # Si es nodo hoja, muestra el resultado
             resultado = asignar_valores_y_evaluar(camino_actual)  # Evalúa el resultado de la rama
             # Mostrar el resultado (0 o 1) en la hoja
             hoja_texto = f"R={resultado}"
@@ -292,26 +342,26 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
             return
         
         # Nodo izquierdo para valor 0
-        x_izq = prev_x - (dx / 2) * (2 ** (len(proposiciones_simples) - depth - 1))
+        x_izq = prev_x - (dx / 2) * (2 ** (len(proposiciones_unicas) - depth - 1))
         y_izq = prev_y + dy
-        nodo_izq = f"{chr(65 + depth)}=0"
+        nodo_izq = f"{proposiciones_unicas[depth]}=0"
         canvas.create_text(x_izq, y_izq, text=nodo_izq, font=("Arial", 10))
         canvas.create_line(prev_x, prev_y, x_izq, y_izq)
         dibujar_nodos(x_izq, y_izq, depth + 1, camino_actual + [nodo_izq])
         
         # Nodo derecho para valor 1
-        x_der = prev_x + (dx / 2) * (2 ** (len(proposiciones_simples) - depth - 1))
+        x_der = prev_x + (dx / 2) * (2 ** (len(proposiciones_unicas) - depth - 1))
         y_der = prev_y + dy
-        nodo_der = f"{chr(65 + depth)}=1"
+        nodo_der = f"{proposiciones_unicas[depth]}=1"
         canvas.create_text(x_der, y_der, text=nodo_der, font=("Arial", 10))
         canvas.create_line(prev_x, prev_y, x_der, y_der)
         dibujar_nodos(x_der, y_der, depth + 1, camino_actual + [nodo_der])
-
 
     # Iniciar el dibujo del árbol desde la raíz
     dibujar_nodos(x0, y0, 0, [])
 
     ventana_arbol.mainloop()
+
 
 
 # Configuración de la ventana principal
