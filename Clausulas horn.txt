@@ -1,0 +1,60 @@
+1. Pizza margarita:
+¬tomate fresco ∨ ¬mozzarella de búfala ∨ ¬albahaca ∨ ¬aceite de oliva ∨ pizza margarita
+no tiene tomate fresco o no tiene mozzarella de búfala ∨ no tiene albahaca o no tiene aceite de oliva o es pizza margarita
+
+2. Pizza hawaiana:
+¬jamón ∨ ¬piña ∨ ¬queso mozzarella ∨ ¬salsa de tomate ∨ pizza hawaiana
+
+3. Pizza vegetariana:
+¬pimientos rojos ∨ ¬champiñones ∨ ¬aceitunas negras ∨ ¬espinacas ∨ pizza vegetariana
+
+4. Pizza cuatro quesos:
+¬mozzarella ∨ ¬gorgonzola ∨ ¬parmesano ∨ ¬cheddar ∨ pizza cuatro quesos
+
+5. Pizza de pepperoni:
+¬salsa de tomate ∨ ¬mozzarella ∨ ¬pepperoni ∨ ¬orégano ∨ pizza de pepperoni
+
+6. Pizza BBQ:
+¬pollo a la parrilla ∨ ¬salsa barbacoa ∨ ¬mozzarella ∨ ¬cebolla morada ∨ pizza BBQ
+
+7. Pizza de mariscos:
+¬calamares ∨ ¬gambas ∨ ¬almejas ∨ ¬aceitunas ∨ pizza de mariscos
+
+8. Pizza caprichosa:
+¬jamón serrano ∨ ¬setas ∨ ¬alcachofas ∨ ¬aceitunas ∨ pizza caprichosa
+
+9. Pizza napolitana:
+¬tomates frescos ∨ ¬albahaca ∨ ¬aceite de oliva ∨ ¬orégano ∨ pizza napolitana
+
+10. Pizza mexicana:
+¬carne molida ∨ ¬jalapeños ∨ ¬maíz ∨ ¬guacamole ∨ pizza mexicana
+
+11. Pizza siciliana:
+¬atún ∨ ¬cebolla roja ∨ ¬aceitunas verdes ∨ ¬alcaparras ∨ pizza siciliana
+
+12. Pizza calzone:
+¬ricotta ∨ ¬jamón cocido ∨ ¬mozzarella ∨ ¬espinacas ∨ pizza calzone
+
+13. Pizza prosciutto e funghi:
+¬jamón de Parma ∨ ¬champiñones ∨ ¬mozzarella ∨ ¬aceite de oliva ∨ pizza prosciutto e funghi
+
+14. Pizza de pollo y pesto:
+¬pollo asado ∨ ¬pesto de albahaca ∨ ¬tomates secos ∨ ¬mozzarella ∨ pizza de pollo y pesto
+
+15. Pizza de bacon y cebolla:
+¬bacon crujiente ∨ ¬cebolla caramelizada ∨ ¬mozzarella ∨ ¬aceitunas negras ∨ pizza de bacon y cebolla
+
+16. Pizza de ternera:
+¬carne de res picada ∨ ¬queso cheddar ∨ ¬salsa barbacoa ∨ ¬pimientos morrones ∨ pizza de ternera
+
+17. Pizza de berenjenas:
+¬berenjenas asadas ∨ ¬tomate seco ∨ ¬mozzarella ∨ ¬aceitunas negras ∨ pizza de berenjenas
+
+18. Pizza de trufa:
+¬aceite de trufa ∨ ¬mozzarella ∨ ¬setas frescas ∨ ¬parmesano rallado ∨ pizza de trufa
+
+19. Pizza de pollo buffalo:
+¬pollo en salsa picante ∨ ¬queso azul ∨ ¬apio picado ∨ ¬mozzarella ∨ pizza de pollo buffalo
+
+20. Pizza con jamón y huevo:
+¬jamón cocido ∨ ¬huevo estrellado ∨ ¬mozzarella ∨ ¬salsa de tomate ∨ pizza con jamón y huevo
