@@ -17,13 +17,17 @@ def guardar_formulas():
             with open(archivo, "w", encoding='utf-8') as file:  # Usa codificación UTF-8
                 for i, formula in enumerate(formulas):
                     # Reemplazar caracteres problemáticos con su equivalente textual
-                    formula = formula.replace('∧', 'AND')  # Conjunción
-                    formula = formula.replace('∨', 'OR')   # Disyunción
-                    formula = formula.replace('¬', 'NOT')  # Negación
+                    formula = formula.replace('∧', 'And')  # Conjunción
+                    formula = formula.replace('∨', 'Or')   # Disyunción
+                    
+                    # Cambiar ¬ por Not en lugar de NOT
+                    formula = formula.replace('¬', '-')  # Negación
+
                     file.write(f"Proposición {i + 1}: {formula}\n")
             messagebox.showinfo("Guardado", "Las fórmulas se guardaron correctamente.")
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el archivo: {e}")
+
 
 
 # Función para cargar fórmulas desde un archivo de texto y mostrarlas en una nueva ventana
@@ -37,6 +41,21 @@ def cargar_formulas():
             messagebox.showinfo("Cargado", "Las fórmulas se cargaron correctamente.")
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo cargar el archivo: {e}")
+
+# Función para cargar reglas desde un archivo y mostrarlas en la entrada de proposiciones
+def cargar_reglas():
+    archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
+    if archivo:
+        try:
+            with open(archivo, "r", encoding='utf-8') as file:
+                contenido = file.read()
+                # Cargar el contenido del archivo en el área de texto de las proposiciones
+                entrada_proposiciones.delete("1.0", tk.END)  # Limpiar el área de texto antes de cargar
+                entrada_proposiciones.insert(tk.END, contenido)  # Insertar el contenido en la entrada
+            messagebox.showinfo("Cargado", "Las reglas se cargaron correctamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar el archivo: {e}")
+
 
 # Función para mostrar el contenido del archivo en una nueva ventana
 def mostrar_contenido_archivo(contenido):
@@ -161,6 +180,10 @@ def mostrar_detalles_proposicion():
             variables_frame = tk.Frame(ventana_detalles, bg="#f7f7f7")
             variables_frame.pack(pady=5)
 
+            # Agregar una etiqueta para el texto que dice "Seleccione los átomos verdaderos"
+            etiqueta_seleccion = tk.Label(variables_frame, text="Seleccione los átomos verdaderos", font=("Helvetica", 12), bg="#f7f7f7")
+            etiqueta_seleccion.pack(pady=10)
+
             checkboxes = []
             for simple in proposiciones_simples_list[seleccion]:
                 var_key = simple.lstrip('¬').strip()
@@ -177,6 +200,7 @@ def mostrar_detalles_proposicion():
             etiqueta_resultado.config(text="Selección no válida", fg="red")
     except ValueError:
         etiqueta_resultado.config(text="Por favor, introduce un número válido", fg="red")
+
 
 def evaluar_resultado(valores, operadores):
     resultado = valores[0]
@@ -247,14 +271,12 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
     x0, y0 = 1500, 700  # Coordenada inicial centrada (ajustada hacia abajo)
     dx, dy = 38, 45  # Separación entre nodos
 
-    # Mostrar la fórmula en la parte superior del canvas, más arriba para evitar superposición
+    # Mostrar la fórmula en la parte superior del canvas
     canvas.create_text(x0, y0 - 80, text=f"Fórmula: {formula}", font=("Arial", 14, "bold"), fill="darkred")
-    
-    # Dibuja el nombre de cada proposición, tres por renglón y centradas
-    for i, prop in enumerate(proposiciones_simples):
-        x_offset = ((i % 3) - 1) * 200  # Separación horizontal entre proposiciones, centradas
-        y_offset = (i // 3) * 20  # Separación vertical entre filas
-        canvas.create_text(x0 + x_offset, y0 - 40 + y_offset, text=f"{chr(65 + i)}", font=("Arial", 12, "bold"))
+
+    # Mostrar la variable y su contenido en la parte superior
+    variables_contenido = ', '.join([f"{chr(65 + i)}={valor}" for i, valor in enumerate(proposiciones_simples)])
+    canvas.create_text(x0, y0 - 50, text=f"Variables: {variables_contenido}", font=("Arial", 12, "bold"), fill="blue")
 
     def asignar_valores_y_evaluar(caminos):
         # Convierte el camino en valores de verdad y evalúa
@@ -291,6 +313,7 @@ def mostrar_arbol(operadores, proposiciones_simples, formula):
 
     ventana_arbol.mainloop()
 
+
 # Configuración de la ventana principal
 ventana_principal = tk.Tk()
 ventana_principal.title("Procesador de Proposiciones Lógicas")
@@ -324,6 +347,10 @@ boton_cargar_formulas.pack(pady=5)
 # Etiqueta para mostrar mensajes
 etiqueta_resultado = tk.Label(ventana_principal, text="", font=("Helvetica", 10), bg="#f7f7f7")
 etiqueta_resultado.pack(pady=5)
+
+# Botón para cargar reglas desde un archivo
+boton_cargar_reglas = tk.Button(ventana_principal, text="Cargar Reglas", font=("Helvetica", 10), bg="#17a2b8", fg="white", command=cargar_reglas)
+boton_cargar_reglas.pack(pady=5)
 
 ventana_principal.mainloop()
 
