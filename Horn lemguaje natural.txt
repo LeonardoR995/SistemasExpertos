@@ -1,59 +1,21 @@
-1. Pizza margarita:
-no tiene tomate fresco o no mozzarella de búfala o no albahaca o no aceite de oliva entonces tienes una pizza margarita.
+1 No tiene tomate fresco o no tiene mozzarella de búfala o no tiene albahaca o no tiene aceite de oliva o tienes una pizza margarita.
+2 No tiene jamón o no tiene piña o no tiene queso mozzarella o no tiene salsa de tomate o tienes una pizza hawaiana.
+3 No tiene pimientos rojos o no tiene champiñones o no tiene aceitunas negras o no tiene espinacas o tienes una pizza vegetariana.
+4 No tiene mozzarella o no tiene gorgonzola o no tiene parmesano o no tiene cheddar o tienes una pizza cuatro quesos.
+5 No tiene salsa de tomate o no tiene mozzarella o no tiene pepperoni o no tiene orégano o tienes una pizza de pepperoni.
+6 No tiene pollo a la parrilla o no tiene salsa barbacoa o no tiene mozzarella o no tiene cebolla morada o tienes una pizza BBQ.
+7 No tiene calamares o no tiene gambas o no tiene almejas o no tiene aceitunas o tienes una pizza de mariscos.
+8 No tiene jamón serrano o no tiene setas o no tiene alcachofas o no tiene aceitunas o tienes una pizza caprichosa.
+9 No tiene tomates frescos o no tiene albahaca o no tiene aceite de oliva o no tiene orégano o tienes una pizza napolitana.
+10 No tiene carne molida o no tiene jalapeños o no tiene maíz o no tiene guacamole o tienes una pizza mexicana.
+11 No tiene atún o no tiene cebolla roja o no tiene aceitunas verdes o no tiene alcaparras o tienes una pizza siciliana.
+12 No tiene ricotta o no tiene jamón cocido o no tiene mozzarella o no tiene espinacas o tienes una pizza calzone.
+13 No tiene jamón de Parma o no tiene champiñones o no tiene mozzarella o no tiene aceite de oliva o tienes una pizza prosciutto e funghi.
+14  No tiene pollo asado o no tiene pesto de albahaca o no tiene tomates secos o no tiene mozzarella o tienes una pizza de pollo y pesto.
+15 No tiene bacon crujiente o no tiene cebolla caramelizada o no tiene mozzarella o no tiene aceitunas negras o tienes una pizza de bacon y cebolla.
+16 No tiene carne de res picada o no tiene queso cheddar o no tiene salsa barbacoa o no tiene pimientos morrones o tienes una pizza de ternera.
+17 No tiene berenjenas asadas o no tiene tomate seco o no tiene mozzarella o no tiene aceitunas negras o tienes una pizza de berenjenas.
+18 No tiene aceite de trufa o no tiene mozzarella o no tiene setas frescas o no tiene parmesano rallado o tienes una pizza de trufa.
+19 No tiene pollo en salsa picante o no tiene queso azul o no tiene apio picado o no tiene mozzarella o tienes una pizza de pollo buffalo.
+20 No tiene jamón cocido o no tiene huevo estrellado o no tiene mozzarella o no tiene salsa de tomate o tienes una pizza con jamón y huevo.
 
-2. Pizza hawaiana:
-no tiene jamón o no piña o no queso mozzarella o no salsa de tomate entonces tienes una pizza hawaiana.
-
-3. Pizza vegetariana:
-no tiene pimientos rojos o no champiñones o no aceitunas negras o no espinacas entonces tienes una pizza vegetariana.
-
-4. Pizza cuatro quesos:
-no tiene mozzarella o no gorgonzola o no parmesano o no cheddar entonces tienes una pizza cuatro quesos.
-
-5. Pizza de pepperoni:
-no tiene salsa de tomate o no mozzarella o no pepperoni o no orégano entonces tienes una pizza de pepperoni.
-
-6. Pizza BBQ:
-no tiene pollo a la parrilla o no salsa barbacoa o no mozzarella o no cebolla morada entonces tienes una pizza BBQ.
-
-7. Pizza de mariscos:
-no tiene calamares o no gambas o no almejas o no aceitunas entonces tienes una pizza de mariscos.
-
-8. Pizza caprichosa:
-no tiene jamón serrano o no setas o no alcachofas o no aceitunas entonces tienes una pizza caprichosa.
-
-9. Pizza napolitana:
-no tiene tomates frescos o no albahaca o no aceite de oliva o no orégano entonces tienes una pizza napolitana.
-
-10. Pizza mexicana:
-no tiene carne molida o no jalapeños o no maíz o no guacamole entonces tienes una pizza mexicana.
-
-11. Pizza siciliana:
-no tiene atún o no cebolla roja o no aceitunas verdes o no alcaparras entonces tienes una pizza siciliana.
-
-12. Pizza calzone:
-no tiene ricotta o no jamón cocido o no mozzarella o no espinacas entonces tienes una pizza calzone.
-
-13. Pizza prosciutto e funghi:
-no tienes jamón de Parma o no champiñones o no mozzarella o no aceite de oliva entonces tienes una pizza prosciutto e funghi.
-
-14. Pizza de pollo y pesto:
-no tiene pollo asado o no pesto de albahaca o no tomates secos o no mozzarella entonces tienes una pizza de pollo y pesto.
-
-15. Pizza de bacon y cebolla:
-no tiene bacon crujiente o no cebolla caramelizada o no mozzarella o no aceitunas negras entonces tienes una pizza de bacon y cebolla.
-
-16. Pizza de ternera:
-no tiene carne de res picada o no queso cheddar o no salsa barbacoa o no pimientos morrones entonces tienes una pizza de ternera.
-
-17. Pizza de berenjenas:
-no tiene berenjenas asadas o no tomate seco o no mozzarella o no aceitunas negras entonces tienes una pizza de berenjenas.
-
-18. Pizza de trufa:
-no tienes no aceite de trufa o no mozzarella o no setas frescas o no parmesano rallado entonces tienes una pizza de trufa.
-
-19. Pizza de pollo buffalo:
-no tienes no pollo en salsa picante o no queso azul o no apio picado o no mozzarella entonces tienes una pizza de pollo buffalo.
-
-20. Pizza con jamón y huevo:
-no tienes no jamón cocido o no huevo estrellado o no mozzarella o no salsa de tomate entonces tienes una pizza con jamón y huevo.
