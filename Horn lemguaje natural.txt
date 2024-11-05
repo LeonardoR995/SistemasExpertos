@@ -11,11 +11,10 @@
 11 No tiene atún o no tiene cebolla roja o no tiene aceitunas verdes o no tiene alcaparras o tienes una pizza siciliana.
 12 No tiene ricotta o no tiene jamón cocido o no tiene mozzarella o no tiene espinacas o tienes una pizza calzone.
 13 No tiene jamón de Parma o no tiene champiñones o no tiene mozzarella o no tiene aceite de oliva o tienes una pizza prosciutto e funghi.
-14  No tiene pollo asado o no tiene pesto de albahaca o no tiene tomates secos o no tiene mozzarella o tienes una pizza de pollo y pesto.
-15 No tiene bacon crujiente o no tiene cebolla caramelizada o no tiene mozzarella o no tiene aceitunas negras o tienes una pizza de bacon y cebolla.
+14 No tiene pollo asado o no tiene pesto de albahaca o no tiene tomates secos o no tiene mozzarella o tienes una pizza de pollo ypesto.
+15 No tiene bacon crujiente o no tiene cebolla caramelizada o no tiene mozzarella o no tiene aceitunas negras o tienes una pizza de bacon ycebolla.
 16 No tiene carne de res picada o no tiene queso cheddar o no tiene salsa barbacoa o no tiene pimientos morrones o tienes una pizza de ternera.
 17 No tiene berenjenas asadas o no tiene tomate seco o no tiene mozzarella o no tiene aceitunas negras o tienes una pizza de berenjenas.
 18 No tiene aceite de trufa o no tiene mozzarella o no tiene setas frescas o no tiene parmesano rallado o tienes una pizza de trufa.
 19 No tiene pollo en salsa picante o no tiene queso azul o no tiene apio picado o no tiene mozzarella o tienes una pizza de pollo buffalo.
-20 No tiene jamón cocido o no tiene huevo estrellado o no tiene mozzarella o no tiene salsa de tomate o tienes una pizza con jamón y huevo.
-
+20 No tiene jamón cocido o no tiene huevo estrellado o no tiene mozzarella o no tiene salsa de tomate o tienes una pizza con jamón yhuevo.
