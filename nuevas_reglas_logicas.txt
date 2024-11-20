@@ -1,0 +1,45 @@
+
+Conjunción (𝛼 ∧ 𝛽):
+Una rama vertical:
+𝛼 y 𝛽 unidas.
+
+Disyunción (𝛼 ∨ 𝛽):
+Dos ramas:
+Rama 1: 𝛼.
+Rama 2: 𝛽.
+
+Negación de Conjunción (¬(𝛼 ∧ 𝛽)):
+Equivalencia: ¬𝛼 ∨ ¬𝛽.
+Dos ramas:
+Rama 1: ¬𝛼.
+Rama 2: ¬𝛽.
+
+Negación de Disyunción (¬(𝛼 ∨ 𝛽)):
+Equivalencia: ¬𝛼 ∧ ¬𝛽.
+Una rama vertical: ¬𝛼 y ¬𝛽 unidas.
+
+Negación de Implicación (¬(𝛼 → 𝛽)):
+Equivalencia: 𝛼 ∧ ¬𝛽.
+Una rama vertical: 𝛼 y ¬𝛽.
+
+Negación de Bicondicional (¬(𝛼 ↔ 𝛽)):
+Equivalencia: (𝛼 ∧ ¬𝛽) ∨ (𝛽 ∧ ¬𝛼).
+Dos ramas:
+Rama 1: 𝛼 y ¬𝛽.
+Rama 2: 𝛽 y ¬𝛼.
+
+Doble Negación (¬¬𝛼):
+Equivalencia: 𝛼.
+Una rama: 𝛼.
+
+Bicondicional (𝛼 ↔ 𝛽):
+Equivalencia: (𝛼 ∧ 𝛽) ∨ (¬𝛼 ∧ ¬𝛽).
+Dos ramas:
+Rama 1: 𝛼 y 𝛽.
+Rama 2: ¬𝛼 y ¬𝛽.
+
+Implicación (𝛼 → 𝛽):
+Equivalencia: ¬𝛼 ∨ 𝛽.
+Dos ramas:
+Rama 1: ¬𝛼.
+Rama 2: 𝛽.
